@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minzi Analytics Dashboard</title>
+    <link rel="shortcut icon" href="/Logo.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #9333ea, #3b82f6, #6366f1);
+            background-size: 300% 300%;
+            animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="flex items-center space-x-2">
+                        <div class="relative">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full blur opacity-75"></div>
+                            <div class="relative bg-white dark:bg-gray-800 rounded-full p-2">
+                                <i data-lucide="bar-chart-2" class="w-8 h-8 text-purple-600"></i>
+                            </div>
+                        </div>
+                        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Analytics Dashboard</h1>
+                    </a>
+                </div>
+                <div class="flex space-x-4">
+                    <div class="relative">
+                        <input type="text" id="linkInput" placeholder="Enter link slug" 
+                            class="px-4 py-2 rounded-lg border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <button id="loadAnalytics" class="ml-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            Load Analytics
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Total Clicks</p>
+                        <h3 id="totalClicks" class="text-2xl font-bold text-gray-800 dark:text-white">-</h3>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
+                        <i data-lucide="mouse-pointer" class="w-6 h-6 text-purple-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Unique Visitors</p>
+                        <h3 id="uniqueVisitors" class="text-2xl font-bold text-gray-800 dark:text-white">-</h3>
+                    </div>
+                    <div class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+                        <i data-lucide="users" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Countries</p>
+                        <h3 id="totalCountries" class="text-2xl font-bold text-gray-800 dark:text-white">-</h3>
+                    </div>
+                    <div class="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
+                        <i data-lucide="globe" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Avg. Daily Clicks</p>
+                        <h3 id="avgDailyClicks" class="text-2xl font-bold text-gray-800 dark:text-white">-</h3>
+                    </div>
+                    <div class="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full">
+                        <i data-lucide="activity" class="w-6 h-6 text-yellow-600"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Clicks Over Time</h3>
+                <canvas id="clicksChart"></canvas>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Device Distribution</h3>
+                <canvas id="devicesChart"></canvas>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Top Browsers</h3>
+                <canvas id="browsersChart"></canvas>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Geographic Distribution</h3>
+                <canvas id="geoChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Recent Clicks</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="border-b dark:border-gray-700">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Time</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Location</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Device</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Browser</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Referrer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentClicksTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
+        
+        if (slug) {
+            document.getElementById('linkInput').value = slug;
+            updateDashboard(slug);
+        }
+
+        const charts = {
+            clicks: new Chart(document.getElementById('clicksChart'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Clicks',
+                        data: [],
+                        borderColor: '#9333ea',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }),
+            devices: new Chart(document.getElementById('devicesChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: ['#9333ea', '#3b82f6', '#6366f1']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            }),
+            browsers: new Chart(document.getElementById('browsersChart'), {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: '#9333ea'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }),
+            geo: new Chart(document.getElementById('geoChart'), {
+                type: 'pie',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#9333ea', '#3b82f6', '#6366f1', '#8b5cf6', 
+                            '#ec4899', '#f43f5e', '#14b8a6', '#84cc16'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            })
+        };
+
+        async function updateDashboard(slug) {
+            try {
+                console.log('Fetching analytics for:', slug);
+                const response = await fetch(`/api/links/${slug}/analytics`);
+                const responseData = await response.json();
+                console.log('Received analytics data:', responseData);
+
+                if (!response.ok) {
+                    throw new Error(responseData.error || 'Failed to fetch analytics');
+                }
+                
+                const { data } = responseData;
+                const { analytics } = data;
+
+                document.getElementById('totalClicks').textContent = analytics.totalClicks || '0';
+                document.getElementById('uniqueVisitors').textContent = analytics.uniqueVisitors || '0';
+                document.getElementById('totalCountries').textContent = Object.keys(analytics.countries || {}).length;
+                
+                const daysActive = analytics.firstClick && analytics.lastClick ? 
+                    Math.max(1, Math.ceil((new Date(analytics.lastClick) - new Date(analytics.firstClick)) / (1000 * 60 * 60 * 24))) : 
+                    1;
+                document.getElementById('avgDailyClicks').textContent = ((analytics.totalClicks || 0) / daysActive).toFixed(1);
+
+                const clicksByDay = analytics.clicksByDay || Array(7).fill(0);
+                charts.clicks.data.labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                charts.clicks.data.datasets[0].data = clicksByDay;
+                charts.clicks.update();
+
+                const devices = analytics.devices || { desktop: 0, mobile: 0, tablet: 0 };
+                charts.devices.data.labels = Object.keys(devices);
+                charts.devices.data.datasets[0].data = Object.values(devices);
+                charts.devices.update();
+
+                const browsers = analytics.browsers || {};
+                const topBrowsers = Object.entries(browsers)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5);
+                charts.browsers.data.labels = topBrowsers.map(([name]) => name);
+                charts.browsers.data.datasets[0].data = topBrowsers.map(([, count]) => count);
+                charts.browsers.update();
+
+                const countries = analytics.countries || {};
+                const topCountries = Object.entries(countries)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 8);
+                charts.geo.data.labels = topCountries.map(([country]) => country);
+                charts.geo.data.datasets[0].data = topCountries.map(([, count]) => count);
+                charts.geo.update();
+
+                const recentClicksTable = document.getElementById('recentClicksTable');
+                recentClicksTable.innerHTML = (analytics.recentClicks || []).map(click => `
+                    <tr class="border-b dark:border-gray-700">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            ${new Date(click.timestamp).toLocaleString()}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            ${click.city ? `${click.city}, ${click.country}` : click.country || 'Unknown'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            ${click.device.type || 'Unknown'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            ${click.device.browser || 'Unknown'}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            ${click.referrer || 'Direct'}
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error updating dashboard:', error);
+                alert('Failed to load analytics data: ' + error.message);
+            }
+        }
+
+        document.getElementById('loadAnalytics').addEventListener('click', () => {
+            const slug = document.getElementById('linkInput').value.trim();
+            if (slug) {
+                updateDashboard(slug);
+            } else {
+                alert('Please enter a link slug');
+            }
+        });
+
+        document.getElementById('linkInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('loadAnalytics').click();
+            }
+        });
+    </script>
+</body>
+
+</html>

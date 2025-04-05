@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Minzi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+    <div class="text-center">
+        <div class="relative mb-8">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full blur opacity-75"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-full p-4 w-24 h-24 mx-auto">
+                <i data-lucide="link-2-off" class="w-16 h-16 text-purple-600"></i>
+            </div>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">404 - Link Not Found</h1>
+        <p class="text-gray-600 dark:text-gray-300 mb-8">The shortened link you're looking for doesn't exist.</p>
+        <a href="/" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors inline-flex items-center gap-2">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            Go Home
+        </a>
+    </div>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
