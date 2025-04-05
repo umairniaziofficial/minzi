@@ -41,7 +41,7 @@ Minzi is a modern, feature-rich URL shortener service built with Node.js, Expres
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/umairniaziofficial/minzi.git
+   git clone https://github.com/umairrx/minzi.git
    cd minzi
    ```
 
@@ -154,10 +154,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 If you encounter any issues or have questions, please:
-1. Check the [issues page](https://github.com/umairniaziofficial/minzi/issues)
+1. Check the [issues page](https://github.com/umairrx/minzi/issues)
 2. Create a new issue if needed
 3. Include as much detail as possible in bug reports
 
 ---
 
-Made with ❤️ by [Umair Niazi](https://github.com/umairniaziofficial)
+Made with ❤️ by [Umair Niazi](https://github.com/umairrx)
